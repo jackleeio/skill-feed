@@ -1,28 +1,50 @@
 # SkillFeed
 
-SkillFeed 是一个场景驱动的 Skill 推荐器：当任务失败、超时或重试过多时，它会自动构建搜索词并在 ClawHub 中推荐最合适的技能与修复路径。
+Turn failures and "I don't know what to use" moments into clear, ranked skill recommendations.
 
-## 核心能力
+## What it does
 
-- 失败检测：识别 API 报错、超时、缺失输出、重试过多
-- 智能检索：自动生成 Q1/Q2/Q3 分层查询词
-- 推荐输出：主推荐 + 备选 + 立即执行步骤 + fallback
-- 多模型适配：Claude Code / ChatGPT / Gemini 输出风格映射
+SkillFeed watches task context (goal + error/failure signal), builds targeted ClawHub queries, ranks candidate skills, and returns an actionable recovery plan.
 
-## 目录结构
+- Detects common failure signals (API errors, timeout, retries, missing output)
+- Generates layered search queries (broad → scenario → failure-specific)
+- Recommends:
+  - 1 primary skill
+  - 2 alternatives
+  - immediate next steps
+  - fallback path
+- Adapts response style for Claude Code / ChatGPT / Gemini
 
-- `SKILL.md`：主流程与触发规则
-- `references/discovery-workflow.md`：检索与排序策略
-- `references/query-templates.md`：场景查询模板
-- `references/provider-adaptation.md`：跨模型适配指南
+## Typical use cases
 
-## 打包文件
+- "Tweet publish failed, what should I use now?"
+- "I need this automated but don't have time. Recommend a skill stack."
+- "This workflow keeps timing out. Give me better options."
 
-- `../dist/skill-feed.skill`
+## Output shape
 
-## 快速使用
+- Goal
+- Failure signal
+- Primary recommendation
+- Alternatives
+- Immediate actions (3–5)
+- Success checks
+- Fallback
+- Provider runbook (Claude Code / ChatGPT / Gemini)
 
-1. 安装 skill
-2. 输入场景或失败信号
-3. 获取推荐技能与执行步骤
-4. 按步骤验证并回传结果进行下一轮推荐
+## Project structure
+
+- `SKILL.md` – trigger rules + core workflow
+- `references/discovery-workflow.md` – ranking and search strategy
+- `references/query-templates.md` – query templates by scenario
+- `references/provider-adaptation.md` – provider-specific output style
+
+## Install
+
+```bash
+clawhub install skill-feed
+```
+
+## Notes
+
+This project optimizes for practical recommendations (what to do next), not just listing possible skills.
