@@ -1,9 +1,9 @@
 ---
-name: skill-match
-description: Proactively detect failed or stuck user tasks, build targeted search queries, and find the best recovery/automation skills from ClawHub. Use when a workflow fails (API errors, retries, timeout, missing expected output) and you need ranked skill recommendations with immediate fix steps.
+name: skill-feed
+description: Proactively detect failed or stuck user tasks, build targeted search queries, and find the best recovery/automation skills from ClawHub. Use when a workflow fails (API errors, retries, timeout, missing expected output) and you need ranked skill recommendations with immediate fix steps. Designed to produce provider-neutral recommendations compatible with Claude Code, ChatGPT, and Gemini workflows.
 ---
 
-# SkillMatch
+# SkillFeed
 
 Automatically match the best skills to unblock a failed or stuck workflow.
 
@@ -66,6 +66,20 @@ Example for failed tweet post:
 - Q2: `x twitter schedule post cron`
 - Q3: `twitter post failed 401 invalid token rate limit`
 
+## Provider Adaptation (Claude Code / ChatGPT / Gemini)
+
+When returning recommendations, include provider-specific execution hints so the same strategy can run across major assistants.
+
+1. Keep core logic provider-neutral
+   - Use the same goal, failure classification, query generation, and ranking flow.
+2. Add execution mapping by provider
+   - Claude Code: emphasize terminal-first and repo workflow steps.
+   - ChatGPT: emphasize concise operator checklist + copy-paste commands.
+   - Gemini: emphasize structured step blocks and explicit validation checks.
+3. Normalize outputs
+   - Keep identical recommendation order across providers.
+   - Only vary phrasing and action formatting.
+
 ## Output Format
 
 - Goal: <what user wants>
@@ -79,8 +93,13 @@ Example for failed tweet post:
   - expected output present
   - no critical error in latest run
 - Fallback if still failing
+- Provider runbook:
+  - Claude Code: <execution notes>
+  - ChatGPT: <execution notes>
+  - Gemini: <execution notes>
 
 ## References
 
 - Search and ranking recipes: `references/discovery-workflow.md`
 - Scenario keyword map: `references/query-templates.md`
+- Claude Code / ChatGPT / Gemini adaptation: `references/provider-adaptation.md`
