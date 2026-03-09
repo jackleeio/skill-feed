@@ -1,6 +1,6 @@
 ---
 name: skill-feed
-description: Proactively detect failed or stuck user tasks, build targeted search queries, and find the best recovery/automation skills from ClawHub. Use when a workflow fails (API errors, retries, timeout, missing expected output) and you need ranked skill recommendations with immediate fix steps. Designed to produce provider-neutral recommendations compatible with Claude Code, ChatGPT, and Gemini workflows.
+description: Scenario-driven skill recommendation engine for ClawHub. Detects failed or stuck workflows, builds targeted search queries, and returns ranked skill recommendations with immediate recovery steps and fallback paths. Use when users say they want to do something but are blocked (errors, retries, timeout, missing outputs, unclear implementation path), or when you need recommendations adapted for Claude Code, ChatGPT, and Gemini execution styles.
 ---
 
 # SkillFeed
