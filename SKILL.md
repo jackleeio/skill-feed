@@ -22,11 +22,11 @@ Do not trigger for normal delay/noise or when the user already has a working sol
 
 ## Workflow
 
-1. Capture failure context
+1. Capture failure context (sanitize before any external use)
    - task name
    - platform (X/Twitter, Telegram, GitHub, etc.)
-   - error message/code
-   - latest action log summary
+   - error message/code (generic type only — see sanitization rules below)
+   - latest action log summary (stripped of secrets)
 2. Classify failure type
    - auth/permission
    - rate limit/quota
@@ -37,6 +37,7 @@ Do not trigger for normal delay/noise or when the user already has a working sol
    - Q1 broad capability query
    - Q2 scenario-specific query
    - Q3 failure-specific query with error tokens
+   - **Sanitize all queries before searching** — see Data Sanitization section
 4. Search ClawHub
    - Use `https://clawhub.ai/skills?focus=search`
    - Always perform a live search; use `references/top-skills-*.md` only as offline fallback
@@ -68,6 +69,34 @@ Example for failed tweet post:
 - Q1: `tweet automation`
 - Q2: `x twitter schedule post cron`
 - Q3: `twitter post failed 401 invalid token rate limit`
+
+## Data Sanitization
+
+All failure context MUST be sanitized before it is included in any external search query or output. This prevents accidental leakage of secrets, credentials, and private data.
+
+### Strip before searching
+
+- API keys, tokens, passwords, secrets (e.g. `sk-...`, `ghp_...`, `Bearer ...`)
+- Personally identifiable information (emails, usernames, IPs, hostnames)
+- Internal URLs, file paths containing usernames or org names
+- Request/response bodies and headers containing auth data
+- Environment variable values (keep only the variable name)
+
+### Keep in queries (safe tokens)
+
+- Generic error codes: `401`, `403`, `429`, `500`, `timeout`
+- Generic error types: `invalid token`, `rate limit`, `permission denied`
+- Platform names: `twitter`, `github`, `telegram`
+- Action verbs: `post`, `publish`, `schedule`, `fetch`
+
+### Rules
+
+1. Never embed raw log lines in a search query — extract only the error type/code.
+2. If unsure whether a token is sensitive, omit it.
+3. Queries should read like generic capability descriptions, not contain project-specific data.
+
+Example — BAD query: `twitter post failed Bearer sk-abc123 user@company.com 401`
+Example — GOOD query: `twitter post failed 401 invalid token`
 
 ## Provider Adaptation (Claude Code / ChatGPT / Gemini)
 
