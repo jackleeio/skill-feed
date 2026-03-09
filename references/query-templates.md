@@ -26,6 +26,36 @@ Use these templates to build Q1/Q2/Q3 from failure context.
 - Q2: `gh pr issue run ci`
 - Q3: `github action failed permission 403`
 
+## Web scraping / browser automation
+
+- Q1: `browser automation scraping`
+- Q2: `headless browser crawl extract page data`
+- Q3: `browser automation failed {error_code} selector timeout`
+
+## Web search / research
+
+- Q1: `web search`
+- Q2: `ai web search fetch summarize`
+- Q3: `search failed {error_code} api key quota`
+
+## File and media processing
+
+- Q1: `file media processing`
+- Q2: `summarize transcript video pdf convert`
+- Q3: `media processing failed {error_code} format unsupported`
+
+## Scheduling / cron jobs
+
+- Q1: `schedule cron automation`
+- Q2: `proactive cron recurring task trigger`
+- Q3: `cron schedule failed {error_code} missed trigger`
+
+## Multi-API / SaaS integration
+
+- Q1: `api integration gateway`
+- Q2: `connect saas api multi-service workflow`
+- Q3: `api integration failed {error_code} auth scope mismatch`
+
 ## Error token extraction hints
 
 Extract compact error markers:

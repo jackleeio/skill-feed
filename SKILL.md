@@ -15,8 +15,10 @@ Run this skill when any of these signals appears:
 2. Retry threshold exceeded (default >=2 retries)
 3. Expected output missing (for example no tweet id after post task)
 4. Execution timeout exceeded
+5. User explicitly asks for tool/skill recommendation
+6. User describes a goal but has no clear implementation path
 
-Do not trigger for normal delay/noise.
+Do not trigger for normal delay/noise or when the user already has a working solution.
 
 ## Workflow
 
@@ -37,6 +39,7 @@ Do not trigger for normal delay/noise.
    - Q3 failure-specific query with error tokens
 4. Search ClawHub
    - Use `https://clawhub.ai/skills?focus=search`
+   - Always perform a live search; use `references/top-skills-*.md` only as offline fallback
    - Prefer sorting by stars / recently updated when comparing candidates
 5. Rank candidates
    - match to goal (highest weight)
@@ -49,7 +52,7 @@ Do not trigger for normal delay/noise.
    - 3-5 concrete next actions
    - fallback path if primary fails
 7. Anti-noise guardrails
-   - Deduplicate same error recommendations within cooldown window (default 30m)
+   - Avoid repeating the same recommendation for the same error within a single conversation
    - Avoid auto-running high-risk external actions without user confirmation
 
 ## Query Construction Rules
@@ -68,14 +71,14 @@ Example for failed tweet post:
 
 ## Provider Adaptation (Claude Code / ChatGPT / Gemini)
 
-When returning recommendations, include provider-specific execution hints so the same strategy can run across major assistants.
+Format the recovery plan for the current provider by default. Only include multi-provider runbooks when the user explicitly requests cross-platform output.
 
 1. Keep core logic provider-neutral
    - Use the same goal, failure classification, query generation, and ranking flow.
-2. Add execution mapping by provider
-   - Claude Code: emphasize terminal-first and repo workflow steps.
-   - ChatGPT: emphasize concise operator checklist + copy-paste commands.
-   - Gemini: emphasize structured step blocks and explicit validation checks.
+2. Detect current provider and use the matching execution style
+   - Claude Code: terminal-first, exact command sequences, minimal commentary.
+   - ChatGPT: compact checklist bullets, short "why" before steps.
+   - Gemini: explicit sections, assumptions, deterministic validation criteria.
 3. Normalize outputs
    - Keep identical recommendation order across providers.
    - Only vary phrasing and action formatting.
@@ -93,10 +96,7 @@ When returning recommendations, include provider-specific execution hints so the
   - expected output present
   - no critical error in latest run
 - Fallback if still failing
-- Provider runbook:
-  - Claude Code: <execution notes>
-  - ChatGPT: <execution notes>
-  - Gemini: <execution notes>
+- Execution notes: <steps formatted for current provider>
 
 ## References
 
